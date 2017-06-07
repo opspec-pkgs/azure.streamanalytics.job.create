@@ -9,7 +9,7 @@
             "value": "$location"
         },
         "numberOfStreamingUnits": {
-            "value": "$numberOfStreamingUnits"
+            "value": $numberOfStreamingUnits
         }
     }
 }

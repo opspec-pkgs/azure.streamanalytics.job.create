@@ -9,7 +9,7 @@
             "type": "string"
         },
         "numberOfStreamingUnits": {
-            "type": "string"
+            "type": "int"
         }
     },
     "resources": [
