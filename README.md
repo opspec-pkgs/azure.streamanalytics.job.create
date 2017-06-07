@@ -1,5 +1,5 @@
 # problem statement
-creates an azure stream analytics job (if doesn't already exist)
+creates an azure stream analytics job (if it doesn't already exist)
 
 # example usage
 
