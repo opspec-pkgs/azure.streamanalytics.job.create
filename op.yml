@@ -1,5 +1,5 @@
 name: github.com/opspec-pkgs/azure.streamanalytics.create
-description: creates an azure stream analytics job (if doesn't already exist)
+description: creates an azure stream analytics job (if it doesn't already exist)
 inputs:
   subscriptionId:
     string:
