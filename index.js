@@ -1,5 +1,6 @@
 const msRestAzure = require('ms-rest-azure');
 const { URL } = require('url');
+let createOrUpdateAttempts = 0;
 
 const login = async () => {
     console.log('logging in');
@@ -22,7 +23,35 @@ const login = async () => {
     return response;
 };
 
+const registerProvider = async (credentials) => {
+    console.log('registering resource provider Microsoft.StreamAnalytics');
+
+    const url = new URL(
+        'https://management.azure.com/' +
+        `subscriptions/${process.env.subscriptionId}/` +
+        'providers/Microsoft.StreamAnalytics/register' +
+        '?api-version=2017-05-10');
+
+    // see https://github.com/Azure/azure-sdk-for-node/tree/bf6473eae7faca1ca1cf1375ee53c6fc214ca1b1/runtime/ms-rest-azure#using-the-generic-authenticated-azureserviceclient-to-make-custom-requests-to-azure
+    const azureServiceClient = new msRestAzure.AzureServiceClient(credentials);
+
+    let options = {
+        method: 'POST',
+        url: url.href
+    };
+
+    const result = await azureServiceClient.sendRequest(options);
+
+    if (result.error){
+        throw new Error(JSON.stringify(result.error));
+    }
+
+    console.log('registering resource provider Microsoft.StreamAnalytics successful');
+};
+
 const createOrUpdate = async (credentials) => {
+    createOrUpdateAttempts++;
+
     console.log('creating/updating stream analytics job');
 
     const url = new URL(
@@ -52,11 +81,17 @@ const createOrUpdate = async (credentials) => {
     const result = await azureServiceClient.sendRequest(options);
 
     if (result.error){
+        if (result.error.code === 'MissingSubscriptionRegistration' && createOrUpdateAttempts === 1) {
+            // provider not registered; register & retry create, but only once
+            console.log("Microsoft.StreamAnalytics provider not registered for subscription");
+            await registerProvider(credentials);
+            await createOrUpdate(credentials);
+            return;
+        }
         throw new Error(JSON.stringify(result.error));
     }
 
     console.log('creating/updating stream analytics job successful');
-    return result;
 };
 
 login().then(createOrUpdate).catch(error => {
