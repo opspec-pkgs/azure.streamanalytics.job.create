@@ -1,54 +1,53 @@
-name: github.com/opspec-pkgs/azure.streamanalytics.create
+name: github.com/opspec-pkgs/azure.streamanalytics.job.create
 description: creates an azure stream analytics job (if it doesn't already exist)
 inputs:
   subscriptionId:
     string:
       constraints: { minLength: 1 }
       description: id of azure subscription
-  azureUsername:
-    string:
-      constraints: { format: email }
-      description: email address of azure account
-  azurePassword:
+  loginId:
     string:
       constraints: { minLength: 1 }
-      description: password of azure account
+      description: id of user, service principal, or app to login with
+  loginSecret:
+    string:
+      constraints: { minLength: 1 }
+      description: secret of user, service principal, or app to login with
       isSecret: true
-  name:
+  loginTenantId:
     string:
       constraints: { minLength: 1 }
-      description: name of the stream analytics job
+      description: tenant id of user, service principal, or app to login with
   resourceGroup:
     string:
       constraints: { minLength: 1 }
       description: name of azure resource group
+  name:
+    string:
+      constraints: { minLength: 1 }
+      description: name of the stream analytics job
   location:
     string:
       constraints: { minLength: 1 }
       description: location of provisioned stream analytics job
       default: westus
-  numberOfStreamingUnits:
-    number:
-      constraints: { enum: [ 1, 3, 6, 12, 18, 24, 30, 36, 42, 48 ] }
-      description: number of streaming units
-      default: 1
-  template:
-    file:
-      default: /template.json
+  loginType:
+    string:
+      constraints: { enum: [user, sp]}
+      description: type of login; 'user' (default) or 'sp' for service principal
+      default: user
+version: 2.0.0
 run:
-  serial:
-    - container:
-        image: { ref: 'alpine' }
-        cmd: [ /cmd.sh ]
-        files: { /cmd.sh, /parametersTemplate.json, /parameters.json: parameters }
-        envVars: { name, location, numberOfStreamingUnits }
-    - op:
-        pkg: { ref: github.com/opspec-pkgs/azure.group.deployment.create#0.0.2 }
-        inputs: 
-          subscriptionId:
-          username: azureUsername
-          password: azurePassword
-          resourceGroup:
-          name:
-          parameters:
-          template:
+  container:
+    image: { ref: 'opspecpkgs/azure.streamanalytics.job.create:1.0.0' }
+    cmd: [node, /index.js]
+    files: { /index.js }
+    envVars:
+      subscriptionId:
+      loginId:
+      loginSecret:
+      loginTenantId:
+      resourceGroup:
+      name:
+      location:
+      loginType:
