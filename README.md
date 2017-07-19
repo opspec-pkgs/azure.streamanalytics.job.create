@@ -20,20 +20,19 @@ opctl run github.com/opspec-pkgs/azure.streamanalytics.job.create#VERSION
 ## compose
 
 ```yaml
-run:
-  op:
-    pkg: { ref: github.com/opspec-pkgs/azure.streamanalytics.job.create#VERSION }
-    inputs:
-      subscriptionId:
-      loginId:
-      loginSecret:
-      loginTenantId:
-      resourceGroup:
-      location:
-      name:
-      # begin optional args
-      loginType:
-      # end optional args
+op:
+  pkg: { ref: github.com/opspec-pkgs/azure.streamanalytics.job.create#VERSION }
+  inputs:
+    subscriptionId:
+    loginId:
+    loginSecret:
+    loginTenantId:
+    resourceGroup:
+    location:
+    name:
+    # begin optional args
+    loginType:
+    # end optional args
 ```
 
 # Support
