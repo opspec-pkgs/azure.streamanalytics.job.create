@@ -1,3 +1,5 @@
+[![Build Status](https://travis-ci.org/opspec-pkgs/azure.streamanalytics.job.create.svg?branch=master)](https://travis-ci.org/opspec-pkgs/azure.streamanalytics.job.create)
+
 # Problem statement
 creates an azure stream analytics job (if it doesn't already exist)
 
